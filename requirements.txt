@@ -1,0 +1,8 @@
+torch>=2.0.0
+torchvision
+transformers
+numpy
+opencv-python
+pillow
+scikit-learn
+tqdm
