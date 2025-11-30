@@ -36,3 +36,78 @@ The model was fine-tuned on a custom dataset and evaluated on unseen validation 
 ├── evaluate.py                # Script 4: Validation Metrics (IoU/Dice)
 ├── requirements.txt           # Python Dependencies
 └── README.md
+```
+## Getting Started
+1. Installation    
+
+Clone the repository and install the required dependencies.
+```Bash
+
+git clone [https://github.com/SrisuryaTeja/Prompted-Segmentation-for-Drywall-QA.git](https://github.com/SrisuryaTeja/Prompted-Segmentation-for-Drywall-QA.git)
+cd Prompted-Segmentation-for-Drywall-QA
+
+pip install -r requirements.txt
+```
+
+
+
+2. Data Setup
+   
+Since raw data is not uploaded to GitHub, you need to place your Roboflow exports in the dataset_root folder.
+
+- Create a folder named dataset_root.
+
+- Inside it, create folders for cracks and drywall.
+
+- Place your COCO JSON exports inside the train and valid subfolders.
+
+- Your path should look like this: ./dataset_root/cracks/train/_annotations.coco.json
+
+## Usage Pipeline (Run in Order)
+Follow these steps to reproduce the training and evaluation results.
+
+Step 1: Preprocessing   
+- Convert the raw COCO JSON annotations (Polygons/Boxes) into unified binary masks for the model.
+
+```Bash
+
+python preprocess_masks.py
+```
+- Output: Creates a processed_dataset/ folder containing images and corresponding black-and-white masks.
+
+  
+
+Step 2: Training (Fine-Tuning)   
+- Start the training loop. This script uses Mixed Precision (AMP) to fit on Laptop GPUs.
+
+```Bash
+
+python train.py
+```
+Configuration: Default is BATCH_SIZE=4 and EPOCHS=10.
+
+Output: Saves model checkpoints to ./fine_tuned_clipseg_epoch_X and the final model to ./fine_tuned_clipseg_final.
+
+
+
+Step 3: Evaluation    
+- Calculate mIoU and Dice scores on the validation set to verify performance.
+
+```Bash
+
+python evaluate.py
+```
+Output: Prints the "Final Grade Report" with metrics for both Cracks and Drywall.
+
+Step 4: Inference    
+- Run the model on a single test image to visualize the result.
+
+Open predict.py and update the TEST_IMAGE path.
+
+Run the script:
+
+```Bash
+
+python predict.py
+```
+Output: Generates prediction_mask.png.
